@@ -47,4 +47,51 @@ RSpec.describe CoursesController, type: :controller do
 
   end
 
+
+  describe "GET new" do
+    it "assigns @course" do
+
+      course = FactoryGirl.build(:course)
+
+      get :new
+
+      expect(assigns[:course]).to be_new_record
+      expect(assigns[:course]).to be_instance_of(Course)
+    end
+
+    it "render template" do
+      course = FactoryGirl.build(:course)
+
+      get :new
+      
+      expect(response).to render_template("new")
+    end
+  end
+
+
+
+  describe "POST create" do
+
+    it "doesn't create a record when course doesn't have a title" do
+      expect{ post :create, params: { course: {description: "bar"} } }.to change{ Course.count }.by(0)
+    end
+
+    it "render new template record when course has a title" do
+      post :create, params: {course: {description: "bar"}}
+      expect(response).to render_template("new")
+    end
+
+    it "create a new course record when course has a title" do
+      course = FactoryGirl.build(:course)
+      expect{ post :create, params: {course: FactoryGirl.attributes_for(:course)} }.to change{ Course.count }.by(1)
+    end
+
+
+    it "redirect to courses_path when course has a title" do
+      course = FactoryGirl.build(:course)
+      post :create, params: { course: FactoryGirl.attributes_for(:course) }
+      expect(response).to redirect_to courses_path
+    end
+  end
+
 end
