@@ -97,7 +97,81 @@ RSpec.describe CoursesController, type: :controller do
         expect(response).to redirect_to courses_path
       end
     end
-    
+
+  end
+
+
+  describe "GET edit" do
+    it "assigns course" do
+      course = FactoryGirl.create(:course)
+      get :edit, params: {id: course.id}
+      expect(assigns[:course]).to eq(course)
+    end
+
+    it "render template" do
+      course = FactoryGirl.create(:course)
+      get :edit, params: {id: course.id}
+      expect(assigns[:course]).to eq(course)
+    end
+  end
+
+
+  describe "PUT update" do
+
+    context "when course has title" do
+      it "assigns @course" do
+        course = FactoryGirl.create(:course)
+        put :update, params: {id: course.id, course: { title: "Title", description: "Description"}}
+        expect(assigns[:course]).to eq(course)
+      end
+
+      it "changes value" do
+        course = FactoryGirl.create(:course)
+        put :update, params: {id: course.id, course: { title: "Title", description: "Description"}}
+        expect(assigns[:course].title).to eq("Title")
+        expect(assigns[:course].description).to eq("Description")
+      end
+
+      it "redirect_to course_path" do
+        course = FactoryGirl.create(:course)
+        put :update, params: {id: course.id, course: { title: "Title", description: "Description"}}
+        expect(response).to redirect_to course_path(course)
+      end
+    end
+
+    context "when course doesn't have title" do
+      it "assigns @course" do
+        course = FactoryGirl.create(:course)
+        put :update, params: {id: course.id, course: { title: "", description: "Description"}}
+        expect(assigns[:course]).not_to eq("Description")
+      end
+
+      it "render edit template" do
+        course = FactoryGirl.create(:course)
+        put :update, params: {id: course.id, course: { title: "", description: "Description"}}
+        expect(response).to render_template("edit")
+      end
+    end
+
+  end
+
+  describe "DELETE destroy" do
+    it "assigns @course" do
+      course = FactoryGirl.create(:course)
+      delete :destroy, params: { id: course.id }
+      expect(assigns[:course]).to eq(course)
+    end
+
+    it "delete a record" do
+      course = FactoryGirl.create(:course)
+      expect{ delete :destroy, params: { id: course.id } }.to change{ Course.count }.by(-1)
+    end
+
+    it "redirect to courses_path" do
+      course = FactoryGirl.create(:course)
+      delete :destroy, params: { id: course.id }
+      expect(response).to redirect_to courses_path
+    end
   end
 
 end
