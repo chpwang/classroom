@@ -2,6 +2,13 @@ require 'rails_helper'
 
 RSpec.describe CoursesController, type: :controller do
 
+
+  describe "Homepage" do
+    it "route root path to course # index" do
+      expect(get: "/").to route_to(controller: "courses", action: "index")
+    end
+  end
+
   describe "GET index" do
     it "assigns @courses" do
 
